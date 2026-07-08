@@ -18,7 +18,8 @@ export const fetchLawList = async (query: string): Promise<LawItem[]> => {
   const allLaws: LawItem[] = [];
 
   const fetchTarget = async (target: string) => {
-    const url = `${BASE_URL}/lawSearch.do?OC=${API_KEY}&target=${target}&type=XML&query=${encodeURIComponent(query)}`;
+    // 200 items per target to allow deep client-side filtering and pagination
+    const url = `${BASE_URL}/lawSearch.do?OC=${API_KEY}&target=${target}&type=XML&query=${encodeURIComponent(query)}&numOfRows=200`;
     
     try {
       const response = await axios.get(url);
