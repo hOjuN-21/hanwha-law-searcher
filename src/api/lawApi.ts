@@ -2,8 +2,6 @@ import axios from 'axios';
 
 // Get API Key from environment variables
 const API_KEY = import.meta.env.VITE_LAW_API_KEY || 'test';
-// Using a CORS proxy to bypass GitHub Pages CORS restrictions when calling external API
-const CORS_PROXY = 'https://corsproxy.io/?'; 
 const BASE_URL = 'https://www.law.go.kr/DRF';
 
 export interface LawItem {
@@ -17,10 +15,9 @@ export interface LawItem {
 
 export const fetchLawList = async (query: string): Promise<LawItem[]> => {
   const url = `${BASE_URL}/lawSearch.do?OC=${API_KEY}&target=law&type=XML&query=${encodeURIComponent(query)}`;
-  const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(url)}`;
   
   try {
-    const response = await axios.get(proxiedUrl);
+    const response = await axios.get(url);
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(response.data, 'text/xml');
     
@@ -49,10 +46,9 @@ export const fetchLawList = async (query: string): Promise<LawItem[]> => {
 export const fetchLawDetailHtml = async (lawId: string): Promise<string> => {
   // Use HTML type for direct rendering
   const url = `${BASE_URL}/lawService.do?OC=${API_KEY}&target=law&MST=${lawId}&type=HTML`;
-  const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(url)}`;
   
   try {
-    const response = await axios.get(proxiedUrl);
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching law detail:', error);
